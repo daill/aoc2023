@@ -1,1 +1,1 @@
-/mnt/c/Devel/workspaces/aoc2023/day1/target/debug/day1: /mnt/c/Devel/workspaces/aoc2023/day1/src/main.rs
+/Users/daill/Devel/workspaces/aoc2023/day1/target/debug/day1: /Users/daill/Devel/workspaces/aoc2023/day1/src/main.rs
