@@ -69,10 +69,6 @@ fn main() {
 
     for (card, winn, nums) in &content {
         println!("{:?}", card);
-        let mut l = 1;
-        if card_map.contains_key(&card) {
-            l += card_map.get(&card).unwrap();
-        }
 
         let mut multi = 0;
         for win in winn {
@@ -81,13 +77,19 @@ fn main() {
             }
         }
 
-        for i in 0..multi {
-            let mut val = l;
-            if card_map.contains_key(&(i + card)) {
-                val += card_map.get(&(i + card)).unwrap();
-            }
-            card_map.insert(i + card, val);
-            println!("{:?}", card_map);
+        let l = card_map.get(&card).unwrap_or(&1).clone();
+
+        for i in 1..multi + 1 {
+            card_map.insert(i + card, card_map.get(&(i + card)).unwrap_or(&1) + l);
         }
+        if l == 1 {
+            card_map.insert(card.clone(), l);
+        }
+        println!("{:?}", card_map);
     }
+
+    card_map.iter().for_each(|(k, v)| {
+        sum += v;
+    });
+    println!("{:?}", sum);
 }
