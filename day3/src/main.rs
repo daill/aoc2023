@@ -96,7 +96,7 @@ fn main() {
         println!(" sum {:?}", number);
     }*/
 
-    let ctrl_num: HashMap<&(String, (usize, usize)), Vec<(String, (usize, Vec<usize>))>> =
+    let mut ctrl_num: HashMap<(String, (usize, usize)), Vec<(String, (usize, Vec<usize>))>> =
         HashMap::new();
 
     'outer: for number in content.1 {
@@ -114,15 +114,21 @@ fn main() {
                 {
                     println!("{:?} {:?}", number, control);
                     if (ctrl_num.contains_key(&control)) {
-                        ctrl_num.get(&control).unwrap().push(number.clone());
+                        let mut number_vec = ctrl_num.get_mut(&control).unwrap();
+                        number_vec.push(number.clone());
                     } else {
-                        ctrl_num.insert(&control, vec![number.clone()]);
+                        ctrl_num.insert(control.clone(), vec![number.clone()]);
                     }
                 }
             }
         }
-        println!(" sum {:?}", number);
     }
 
-    println!("sum {:?}", sum);
+    for (control, numbers) in ctrl_num {
+        if numbers.len() == 2 {
+            sum += numbers[0].0.parse::<i32>().unwrap() * numbers[1].0.parse::<i32>().unwrap();
+            println!("{:?} {:?}", control, numbers);
+        }
+    }
+    println!("sum: {}", sum);
 }
