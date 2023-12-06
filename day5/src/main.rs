@@ -3,7 +3,7 @@ extern crate core;
 use regex::Regex;
 use std::collections::HashMap;
 use std::fs::File;
-use std::io;
+use std::{io, vec};
 use std::io::{BufRead, Read};
 
 fn read_from_file() -> (Vec<i32>, HashMap<String, Vec<(i32, i32, i32)>>) {
@@ -16,6 +16,10 @@ fn read_from_file() -> (Vec<i32>, HashMap<String, Vec<(i32, i32, i32)>>) {
 
             let re = Regex::new(r"([0-9]+)\s([0-9]+)\s([0-9]+)").unwrap();
 
+            let mut numbers = Vec::new();
+
+            let mut current_line = "".to_string();
+
             for line in lines {
                 if let Ok(line) = line {
                     if line.starts_with("seeds:") {
@@ -24,19 +28,14 @@ fn read_from_file() -> (Vec<i32>, HashMap<String, Vec<(i32, i32, i32)>>) {
                             .filter_map(|s| s.parse::<i32>().ok())
                             .collect();
                     } else {
-                        let mut current_line = "".to_string();
-
                         if line.ends_with("map:") {
                             current_line = line.clone();
                             continue;
                         }
 
-                        let mut numbers = Vec::new();
-
-
                         if !line.is_empty() {
                             let Some(caps) = re.captures(&line) else {
-                                continue;                                
+                                continue;
                             };
                             let (a, b, c) = (
                                 &caps[1].parse::<i32>().unwrap(),
@@ -46,9 +45,10 @@ fn read_from_file() -> (Vec<i32>, HashMap<String, Vec<(i32, i32, i32)>>) {
                             numbers.push((*a, *b, *c));
                             println!("{:?}", numbers);
                         } else {
-                            result.insert(current_line.to_string(), numbers);
+                            result.insert(current_line.to_string(), numbers.clone());
                             println!("{:?}", result);
                             current_line = "".to_string();
+                            numbers = Vec::new();
                         }
                     }
                 }
@@ -61,6 +61,17 @@ fn read_from_file() -> (Vec<i32>, HashMap<String, Vec<(i32, i32, i32)>>) {
 }
 
 fn main() {
-    let content: (Vec<i32>, HashMap<String, Vec<(i32, i32, i32)>>) = read_from_file();
+    let order = vec!["seed-to-soil map:", "soil-to-fertilizer map:", "fertilizer-to-water map:", "water-to-light map:", "light-to-temperature map:", "temperature-to-humidity map:", "humidity-to-location map:"]
+
+    let (seeds, maps): (Vec<i32>, HashMap<String, Vec<(i32, i32, i32)>>) = read_from_file();
+
+    for seed in seeds {
+        println!("{}", seed);
+        for ord in order {
+            let mapping = maps[ord];
+            println!("{} {} {}", mapping.0, mapping.1, mapping.2);
+        }
+    }
+
     println!("{:?}", content);
 }
