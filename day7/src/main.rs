@@ -1,6 +1,7 @@
 extern crate core;
 
 use std::cmp::Ordering;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, Read};
@@ -21,8 +22,23 @@ fn read_from_file() -> Vec<(String, i32, u64, i32, u64)> {
                     let mut counts:u64 = 0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000;
                     let base: u64 = 2;
 
+                    let max = cards
+                        .trim()
+                        .chars()
+                        .collect::<Vec<char>>()
+                        .into_iter()
+                        .fold(HashMap::<char, usize>::new(), |mut m, x| {
+                            *m.entry(x).or_default() += 1;
+                            m
+                        });
+
+                    max.sort_keys(|a, b| {
+                        if a
+                    });
+
+                    println!("{:?}", max);
                     // A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2
-                    for c in chars {
+                    for c in &chars {
                         elements |= match c {
                             'A' => {
                                 counts +=
